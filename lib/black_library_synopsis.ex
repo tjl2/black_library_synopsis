@@ -7,7 +7,25 @@ defmodule BlackLibrarySynopsis do
   Generate a Black Library synopsis about a given prompt by using the OpenAI API.
   """
   def about(prompt) do
-    {:ok, json_body} =
+    case ChatGpt.post("completions", json_body(prompt), ChatGpt.headers(), recv_timeout: 8000) do
+      {:ok, response} ->
+        {:ok, body} = Jason.decode(response.body)
+        IO.puts(body |> Map.get("choices") |> List.first() |> Map.get("text"))
+
+      {:error, error} ->
+        IO.inspect(error)
+    end
+  end
+
+  @doc """
+  Lambda handler for AWS Lambda.
+  """
+  def lambda_handler(%{"prompt" => prompt}, _context \\ %{}) do
+    about(prompt)
+  end
+
+  defp json_body(prompt) do
+    {:ok, json_encoded_body} =
       Jason.encode(%{
         "model" => "text-davinci-003",
         "prompt" => "Write a synopsis for a Black Library novel about #{prompt}",
@@ -18,13 +36,6 @@ defmodule BlackLibrarySynopsis do
         "presence_penalty" => 1
       })
 
-    case ChatGpt.post("completions", json_body, ChatGpt.headers(), recv_timeout: 8000) do
-      {:ok, response} ->
-        {:ok, body} = Jason.decode(response.body)
-        IO.puts(body |> Map.get("choices") |> List.first() |> Map.get("text"))
-
-      {:error, error} ->
-        IO.inspect(error)
-    end
+    json_encoded_body
   end
 end
