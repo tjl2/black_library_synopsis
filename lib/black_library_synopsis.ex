@@ -4,19 +4,6 @@ defmodule BlackLibrarySynopsis do
   """
 
   @doc """
-  Hello world.
-
-  ## Examples
-
-      iex> BlackLibrarySynopsis.hello()
-      :world
-
-  """
-  def hello do
-    :world
-  end
-
-  @doc """
   Generate a Black Library synopsis about a given prompt by using the OpenAI API.
   """
   def about(prompt) do
