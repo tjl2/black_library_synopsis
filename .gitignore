@@ -24,3 +24,4 @@ black_library_synopsis-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+lambda.zip
