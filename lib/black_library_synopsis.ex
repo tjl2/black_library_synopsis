@@ -18,7 +18,7 @@ defmodule BlackLibrarySynopsis do
         "presence_penalty" => 1
       })
 
-    case ChatGpt.post("completions", json_body, ChatGpt.headers(), recv_timeout: 8000) do
+    case ChatGpt.post("completions", json_body, ChatGpt.headers(), recv_timeout: 10_000) do
       {:ok, response} ->
         {:ok, body} = Jason.decode(response.body)
         IO.puts(body |> Map.get("choices") |> List.first() |> Map.get("text"))
